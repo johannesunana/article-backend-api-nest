@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -33,11 +33,17 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new Error('Invalid email or password');
+      throw new HttpException(
+        'Invalid email or password',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
     if (!isPasswordValid) {
-      throw new Error('Invalid email or password');
+      throw new HttpException(
+        'Invalid email or password',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     return user;
   }
@@ -49,11 +55,12 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new Error('Invalid username or password');
+      throw new HttpException('Invalid username or password', HttpStatus.UNAUTHORIZED);
     }
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
     if (!isPasswordValid) {
-      throw new Error('Invalid username or password');
+      // error 401 Unauthorized
+      throw new HttpException('Invalid username or password', HttpStatus.UNAUTHORIZED);
     }
     return user;
   }
