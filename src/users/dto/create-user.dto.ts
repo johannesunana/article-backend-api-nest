@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsString, IsNotEmpty, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
@@ -7,8 +7,9 @@ export class CreateUserDto {
   @IsString()
   username: string;
 
+  @IsNotEmpty()
   @IsString()
-  @MinLength(8)
+  @MinLength(8, {message: 'Password must be minimum eight (8) characters'})
   password: string;
 
 }
