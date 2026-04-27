@@ -1,20 +1,15 @@
-import { IsString, IsEmail, IsInt, IsDate } from 'class-validator'
+import { IsEmail, IsString, MinLength } from 'class-validator';
 
-export class CreateUsersDto {
-  @IsString()
-  name: string;
-  username: string;
-  password: string;
-
+export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  @IsInt()
-  id: Uint16Array;
+  @IsString()
+  username: string;
 
-  @IsDate
-  createdAt: Date;
-  updatedAt: Date;
+  @IsString()
+  @MinLength(8)
+  password: string;
+
 }
-
 // Reference: https://dev.to/abhivyaktii/understanding-dtos-data-transfer-objects-in-nestjs-52pb
