@@ -9,8 +9,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  @MinLength(8, {message: 'Password must be minimum eight (8) characters'})
+  @MinLength(8, { message: 'Password must be minimum eight (8) characters' })
   password: string;
-
 }
 // Reference: https://dev.to/abhivyaktii/understanding-dtos-data-transfer-objects-in-nestjs-52pb
