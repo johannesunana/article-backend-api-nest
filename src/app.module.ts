@@ -6,9 +6,10 @@ import { PrismaService } from './prisma/prisma.service';
 import { ConfigModule } from '@nestjs/config';
 import { FeatureModule } from './feature/feature.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [UsersModule, FeatureModule, AuthModule],
+  imports: [UsersModule, FeatureModule, AuthModule, JwtModule.register({secret: process.env.JWT_SECRET})],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
