@@ -47,44 +47,31 @@ export class UsersService {
     });
   }
   
-  async loginEmail(loginDto: LoginEmailDto) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: loginDto.email,
-      },
-    });
-    if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
-    }
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid password');
-    }
-    return user;
-  }
-
-  async loginUsername(loginDto: LoginUsernameDto) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        username: loginDto.username,
-      },
-    });
-    if (!user) {
-      throw new UnauthorizedException('Invalid username or password');
-    }
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
-    if (!isPasswordValid) {
-      
-      throw new UnauthorizedException('Invalid username or password');
-    }
-    return user;
-  }
-
   async login(loginDto: LoginEmailDto | LoginUsernameDto) {
+    let user;
+
     if ('email' in loginDto) {
-      return this.loginEmail(loginDto);
+      user = await this.prisma.user.findUnique({
+        where: { email: loginDto.email },
+      });
+    } else {
+      user = await this.prisma.user.findUnique({
+        where: { username: loginDto.username },
+      });
     }
-    return this.loginUsername(loginDto);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // don't include the password in the returned user object
+    const { password, ...result } = user;
+    return result;
   }
   
   findAll() {
