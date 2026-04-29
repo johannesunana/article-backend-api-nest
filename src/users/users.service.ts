@@ -69,7 +69,6 @@ export class UsersService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // don't include the password in the returned user object
     const { password, ...result } = user;
     return result;
   }
