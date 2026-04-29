@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -25,11 +25,11 @@ export class UsersService {
     });
   
     if (existingEmail) {
-      throw new HttpException('Email already exists', HttpStatus.CONFLICT);
+      throw new ConflictException('Email already exists');
     }
   
     if (existingUsername) {
-      throw new HttpException('Username already exists', HttpStatus.CONFLICT);
+      throw new ConflictException('Username already exists');
     }   
 
     return this.prisma.user.create({
@@ -54,17 +54,11 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new HttpException(
-        'Invalid email or password',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new UnauthorizedException('Invalid email or password');
     }
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
     if (!isPasswordValid) {
-      throw new HttpException(
-        'Invalid email or password',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new UnauthorizedException('Invalid password');
     }
     return user;
   }
@@ -76,12 +70,12 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new HttpException('Invalid username or password', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException('Invalid username or password');
     }
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
     if (!isPasswordValid) {
-      // error 401 Unauthorized
-      throw new HttpException('Invalid username or password', HttpStatus.UNAUTHORIZED);
+      
+      throw new UnauthorizedException('Invalid username or password');
     }
     return user;
   }
