@@ -10,13 +10,13 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-    const existingEmail = await this.prisma.user.findUnique({
+    const existingEmail = await this.prisma.users.findUnique({
       where: {
         email: createUserDto.email,
       },
     });
   
-    const existingUsername = await this.prisma.user.findUnique({
+    const existingUsername = await this.prisma.users.findUnique({
       where: {
         username: createUserDto.username,
       },
@@ -30,7 +30,7 @@ export class UsersService {
       throw new ConflictException('Username already exists');
     }   
 
-    return await this.prisma.user.create({
+    return await this.prisma.users.create({
       data: {
         ...createUserDto,
         password: hashedPassword,
@@ -46,6 +46,6 @@ export class UsersService {
   }
 
   findAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.users.findMany();
   }
 }

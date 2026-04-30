@@ -16,11 +16,11 @@ export class AuthService {
     let user;
 
     if ('email' in loginDto) {
-      user = await this.prisma.user.findUnique({
+      user = await this.prisma.users.findUnique({
         where: { email: loginDto.email },
       });
     } else {
-      user = await this.prisma.user.findUnique({
+      user = await this.prisma.users.findUnique({
         where: { username: loginDto.username },
       });
     }
