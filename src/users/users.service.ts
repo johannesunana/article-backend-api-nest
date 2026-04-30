@@ -30,7 +30,7 @@ export class UsersService {
       throw new ConflictException('Username already exists');
     }   
 
-    return this.prisma.user.create({
+    return await this.prisma.user.create({
       data: {
         ...createUserDto,
         password: hashedPassword,
