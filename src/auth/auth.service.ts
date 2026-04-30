@@ -1,6 +1,5 @@
 import { UnauthorizedException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginEmailDto } from '../users/dto/login-email.dto';
 import { LoginUsernameDto } from '../users/dto/login-username.dto';
@@ -16,7 +15,6 @@ export class AuthService {
   async login(loginDto: LoginEmailDto | LoginUsernameDto) {
     let user;
 
-    // use user service and prisma to check if user exists and password is correct
     if ('email' in loginDto) {
       user = await this.prisma.user.findUnique({
         where: { email: loginDto.email },
@@ -45,6 +43,29 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async verify(req: any) {
+    // use jwt to verify token and return user info
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+      throw new UnauthorizedException('No token provided');
+    }
+
+    try {
+      const decoded = this.jwtService.verify(token);
+      return {
+        id: decoded.sub,
+        email: decoded.email,
+        username: decoded.username,
+      };
+    } catch (err) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+
 
   }
 }
