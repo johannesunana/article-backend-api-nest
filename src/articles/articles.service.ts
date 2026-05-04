@@ -72,4 +72,9 @@ export class ArticlesService {
     });
   }
 
+  async listArticles() {
+    return await this.prisma.articles.findMany({}
+    );
+  }
+
 }

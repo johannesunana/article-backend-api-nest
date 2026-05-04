@@ -1,4 +1,4 @@
-import { Body, Controller, MethodNotAllowedException, Patch, Post, } from '@nestjs/common';
+import { Body, Controller, MethodNotAllowedException, Patch, Post, Get } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -20,8 +20,13 @@ export class ArticlesController {
   }
 
   @Post('update')
-  updateWithPost() {
+  async updateWithPost() {
     throw new MethodNotAllowedException('Use PATCH /articles/update');
+  }
+  
+  @Get()
+  async list() {
+    return await this.articlesService.listArticles();
   }
   
 }
