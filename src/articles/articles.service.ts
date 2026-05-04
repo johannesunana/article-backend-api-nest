@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -33,6 +33,11 @@ export class ArticlesService {
     if (!article) {
       throw new NotFoundException('Article not found');
     }
+
+    if (article.authorId !== updateArticleDto.authorId) {
+      throw new UnauthorizedException('You are not allowed to edit this article');
+    }
+
     const data: Prisma.articlesUpdateInput = {};
 
     if (
