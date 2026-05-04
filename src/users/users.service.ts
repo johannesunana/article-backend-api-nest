@@ -44,8 +44,4 @@ export class UsersService {
       },
     });
   }
-
-  findAll() {
-    return this.prisma.users.findMany();
-  }
 }
