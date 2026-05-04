@@ -6,6 +6,7 @@ import { FeatureModule } from './feature/feature.module';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
+import { ArticlesModule } from './articles/articles.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { LoggerMiddleware } from './logger/logger.middleware';
     FeatureModule,
     AuthModule,
     PrismaModule,
+    ArticlesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
