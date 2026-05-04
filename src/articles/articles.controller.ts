@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
+import { UpdateArticleDto } from './dto/update-article.dto';
 
 @Controller('articles')
 export class ArticlesController {
@@ -13,6 +14,9 @@ export class ArticlesController {
     return await this.articlesService.createArticle(createArticleDto);
   }
 
-
+  @Post('update')
+  async update(@Body() updateArticleDto: UpdateArticleDto) {
+    return await this.articlesService.updateArticle(updateArticleDto.id, updateArticleDto);
+  }
   
 }

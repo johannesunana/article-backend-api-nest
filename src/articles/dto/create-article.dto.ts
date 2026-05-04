@@ -18,5 +18,4 @@ export class CreateArticleDto {
   @IsInt()
   @Min(1)
   authorId: number;
-
 }
