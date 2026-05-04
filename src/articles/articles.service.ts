@@ -80,11 +80,17 @@ export class ArticlesService {
   }
 
   async getArticle(getArticleDto: GetArticleDto) {
-    return await this.prisma.articles.findUnique({
+    const article = await this.prisma.articles.findUnique({
       where: {
         id: getArticleDto.id,
       },
     });
+
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+
+    return article;
   }
 
   async deleteArticle(deleteArticleDto: DeleteArticleDto) {

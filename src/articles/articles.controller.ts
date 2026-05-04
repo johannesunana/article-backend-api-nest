@@ -41,6 +41,7 @@ export class ArticlesController {
   }
 
   @Post('get')
+  @HttpCode(200)
   async getArticle(@Body() getArticleDto: GetArticleDto) {
     return await this.articlesService.getArticle(getArticleDto);
   }
