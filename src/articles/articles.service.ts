@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { GetArticleDto } from './dto/get-article.dto';
+import { DeleteArticleDto } from './dto/delete-article.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -36,7 +37,7 @@ export class ArticlesService {
     }
 
     if (article.authorId !== updateArticleDto.authorId) {
-      throw new UnauthorizedException('You are not allowed to edit this article');
+      throw new ForbiddenException('You are not allowed to edit this article');
     }
 
     const data: Prisma.articlesUpdateInput = {};
@@ -82,6 +83,30 @@ export class ArticlesService {
     return await this.prisma.articles.findUnique({
       where: {
         id: getArticleDto.id,
+      },
+    });
+  }
+
+  async deleteArticle(deleteArticleDto: DeleteArticleDto) {
+    const article = await this.prisma.articles.findUnique({
+      where: {
+        id: deleteArticleDto.id,
+      },
+    });
+
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+
+    if (article.authorId !== deleteArticleDto.authorId) {
+      throw new ForbiddenException(
+        'You are not allowed to delete this article',
+      );
+    }
+
+    await this.prisma.articles.delete({
+      where: {
+        id: deleteArticleDto.id,
       },
     });
   }

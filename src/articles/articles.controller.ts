@@ -1,8 +1,18 @@
-import { Body, Controller, Get, MethodNotAllowedException, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  MethodNotAllowedException,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetArticleDto } from './dto/get-article.dto';
+import { DeleteArticleDto } from './dto/delete-article.dto';
 
 @Controller('articles')
 export class ArticlesController {
@@ -40,4 +50,10 @@ export class ArticlesController {
     throw new MethodNotAllowedException('Use POST /articles/get');
   }
   
+  @Delete()
+  @HttpCode(204)
+  async deleteArticle(@Body() deleteArticleDto: DeleteArticleDto): Promise<void> {
+    await this.articlesService.deleteArticle(deleteArticleDto);
+  }
+
 }
