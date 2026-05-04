@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '../../generated/prisma/client';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -32,11 +33,7 @@ export class ArticlesService {
     if (!article) {
       throw new NotFoundException('Article not found');
     }
-    const data: {
-      title?: string;
-      description?: string;
-      body?: string;
-    } = {};
+    const data: Prisma.articlesUpdateInput = {};
 
     if (
       updateArticleDto.title !== undefined &&
