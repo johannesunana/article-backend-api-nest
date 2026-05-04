@@ -1,7 +1,8 @@
-import { Body, Controller, MethodNotAllowedException, Patch, Post, Get } from '@nestjs/common';
+import { Body, Controller, Get, MethodNotAllowedException, Patch, Post } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { GetArticleDto } from './dto/get-article.dto';
 
 @Controller('articles')
 export class ArticlesController {
@@ -27,6 +28,16 @@ export class ArticlesController {
   @Get()
   async list() {
     return await this.articlesService.listArticles();
+  }
+
+  @Post('get')
+  async getArticle(@Body() getArticleDto: GetArticleDto) {
+    return await this.articlesService.getArticle(getArticleDto);
+  }
+
+  @Get('get')
+  async getArticleWithGet() {
+    throw new MethodNotAllowedException('Use POST /articles/get');
   }
   
 }

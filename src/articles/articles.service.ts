@@ -3,6 +3,7 @@ import { Prisma } from '../../generated/prisma/client';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { GetArticleDto } from './dto/get-article.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -75,6 +76,14 @@ export class ArticlesService {
   async listArticles() {
     return await this.prisma.articles.findMany({}
     );
+  }
+
+  async getArticle(getArticleDto: GetArticleDto) {
+    return await this.prisma.articles.findUnique({
+      where: {
+        id: getArticleDto.id,
+      },
+    });
   }
 
 }
