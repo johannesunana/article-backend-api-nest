@@ -47,6 +47,7 @@ export class ArticlesService {
         id,
       },
     });
+
     if (!article) {
       throw new NotFoundException('Article not found');
     }
@@ -82,12 +83,26 @@ export class ArticlesService {
       return article;
     }
 
-    return await this.prisma.articles.update({
-      where: {
-        id,
-      },
-      data,
-    });
+    try {
+      return await this.prisma.articles.update({
+        where: {
+          id,
+        },
+        data,
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        const exception = new NotFoundException('Article not found');
+        console.log(exception.getResponse());
+        
+        throw exception;
+      }
+
+      throw error;
+    }
   }
 
   async listArticles() {
