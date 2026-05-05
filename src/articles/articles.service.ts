@@ -11,19 +11,34 @@ export class ArticlesService {
   constructor(private prisma: PrismaService) {}
 
   async createArticle(createArticleDto: CreateArticleDto) {
-   const user = await this.prisma.users.findUnique({
+    const user = await this.prisma.users.findUnique({
       where: {
         id: createArticleDto.authorId,
       },
     });
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return await this.prisma.articles.create({
-      data: {
-        ...createArticleDto,
-      },
-    });
+
+    try {
+      return await this.prisma.articles.create({
+        data: {
+          ...createArticleDto,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2003'
+      ) {
+        const exception = new NotFoundException('User not found');
+        console.log(exception.getResponse());
+        throw exception;
+      }
+
+      throw error;
+    }
   }
 
   async updateArticle(id: number, updateArticleDto: UpdateArticleDto) {
@@ -56,7 +71,8 @@ export class ArticlesService {
       data.description = updateArticleDto.description;
     }
 
-    if (updateArticleDto.body !== undefined &&
+    if (
+      updateArticleDto.body !== undefined &&
       updateArticleDto.body !== null
     ) {
       data.body = updateArticleDto.body;
@@ -75,8 +91,7 @@ export class ArticlesService {
   }
 
   async listArticles() {
-    return await this.prisma.articles.findMany({}
-    );
+    return await this.prisma.articles.findMany({});
   }
 
   async getArticle(getArticleDto: GetArticleDto) {
@@ -116,5 +131,4 @@ export class ArticlesService {
       },
     });
   }
-
 }
