@@ -11,26 +11,25 @@ export class ArticlesService {
   constructor(private prisma: PrismaService) {}
 
   async createArticle(createArticleDto: CreateArticleDto) {
-    const user = await this.prisma.users.findUnique({
-      where: {
-        id: createArticleDto.authorId,
+    const data: Prisma.articlesCreateInput = {
+      title: createArticleDto.title,
+      description: createArticleDto.description,
+      body: createArticleDto.body,
+      author: {
+        connect: {
+          id: createArticleDto.authorId,
+        },
       },
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    };
 
     try {
       return await this.prisma.articles.create({
-        data: {
-          ...createArticleDto,
-        },
+        data,
       });
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2003'
+        error.code === 'P2025'
       ) {
         const exception = new NotFoundException('User not found');
         console.log(exception.getResponse());
