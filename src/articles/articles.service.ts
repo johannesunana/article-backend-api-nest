@@ -66,6 +66,15 @@ export class ArticlesService {
 
     const data: Prisma.articlesUpdateInput = {};
 
+    if (updateArticleDto.tags?.length) {
+      data.tags = {
+        connectOrCreate: updateArticleDto.tags.map((tag) => ({
+          where: { name: tag },
+          create: { name: tag },
+        })),
+      };
+    }
+
     if (
       updateArticleDto.title !== undefined &&
       updateArticleDto.title !== null
