@@ -1,44 +1,59 @@
 generator client {
-  provider     = "prisma-client"
-  output       = "../generated/prisma"
-  moduleFormat = "cjs"
+  provider        = "prisma-client"
+  output          = "../generated/prisma"
+  previewFeatures = ["views"]
+  moduleFormat    = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model users {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  username String @unique
-  password String
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  username  String    @unique
+  password  String
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+  articles  Article[]
 
-  createdAt DateTime   @default(now()) @db.Timestamptz(3)
-  updatedAt DateTime   @updatedAt @db.Timestamptz(3)
-  articles  articles[]
+  @@map("users")
 }
 
-model articles {
-  id          Int    @id @default(autoincrement())
+model Article {
+  id          Int      @id @default(autoincrement())
   title       String
   description String
   body        String
-  tags        tags[]
+  authorId    Int
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+  author      User     @relation(fields: [authorId], references: [id])
+  tags        Tag[]    @relation("articlesTotags")
 
-  authorId Int
-  author   users @relation(fields: [authorId], references: [id])
-
-  createdAt DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  @@map("articles")
 }
 
-model tags {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+  articles  Article[] @relation("articlesTotags")
 
-  createdAt DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  @@map("tags")
+}
 
-  articles articles[]
+view ArticleDetailView {
+  id          Int
+  title       String
+  description String
+  body        String
+  username    String
+  tags        Json?    @db.Json
+  createdAt   DateTime @db.Timestamptz(3)
+  updatedAt   DateTime @db.Timestamptz(3)
+
+  @@map("article_detail_view")
 }
