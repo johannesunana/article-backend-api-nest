@@ -20,9 +20,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async login(
-    loginDto: LoginEmailDto | LoginUsernameDto,
-  ) {
+  async login(loginDto: LoginEmailDto | LoginUsernameDto) {
     let user;
 
     if ('email' in loginDto) {
@@ -59,7 +57,6 @@ export class AuthService {
   }
 
   async verify(req: any) {
-    // use jwt to verify token and return user info
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -77,8 +74,10 @@ export class AuthService {
         issuedAt: decoded.iat ?? 0,
         expiresAt: decoded.exp ?? 0,
       };
-    } catch (err) {
-      throw new UnauthorizedException('Invalid token');
+    } catch (err) {      
+        const exception = new UnauthorizedException('Invalid token');
+        console.log(exception.getResponse());
+        throw exception;
     }
   }
 }
