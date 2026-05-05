@@ -13,10 +13,10 @@ export class UsersService {
 
     try {
       const [existingEmail, existingUsername] = await Promise.all([
-        this.prisma.users.findUnique({
+        this.prisma.user.findUnique({
           where: { email: createUserDto.email },
         }),
-        this.prisma.users.findUnique({
+        this.prisma.user.findUnique({
           where: { username: createUserDto.username }
         }),
       ]);
@@ -29,7 +29,7 @@ export class UsersService {
         throw new ConflictException('Username already exists');
       }   
       
-      return await this.prisma.users.create({
+      return await this.prisma.user.create({
         data: {
           ...createUserDto,
           password: hashedPassword,

@@ -11,7 +11,7 @@ export class ArticlesService {
   constructor(private prisma: PrismaService) {}
 
   async createArticle(createArticleDto: CreateArticleDto) {
-    const data: Prisma.articlesCreateInput = {
+    const data: Prisma.ArticleCreateInput = {
       title: createArticleDto.title,
       description: createArticleDto.description,
       body: createArticleDto.body,
@@ -32,7 +32,7 @@ export class ArticlesService {
     }
 
     try {
-      return await this.prisma.articles.create({
+      return await this.prisma.article.create({
         data,
       });
     } catch (error) {
@@ -50,7 +50,7 @@ export class ArticlesService {
   }
 
   async updateArticle(id: number, updateArticleDto: UpdateArticleDto) {
-    const article = await this.prisma.articles.findUnique({
+    const article = await this.prisma.article.findUnique({
       where: {
         id,
       },
@@ -64,7 +64,7 @@ export class ArticlesService {
       throw new ForbiddenException('You are not allowed to edit this article');
     }
 
-    const data: Prisma.articlesUpdateInput = {};
+    const data: Prisma.ArticleUpdateInput = {};
 
     if (updateArticleDto.tags?.length) {
       data.tags = {
@@ -101,7 +101,7 @@ export class ArticlesService {
     }
 
     try {
-      return await this.prisma.articles.update({
+      return await this.prisma.article.update({
         where: {
           id,
         },
@@ -122,11 +122,11 @@ export class ArticlesService {
   }
 
   async listArticles() {
-    return this.prisma.articles.findMany({});
+    return this.prisma.article.findMany({});
   }
 
   async getArticle(getArticleDto: GetArticleDto) {
-    const article = await this.prisma.articles.findUnique({
+    const article = await this.prisma.article.findUnique({
       where: {
         id: getArticleDto.id,
       },
@@ -140,7 +140,7 @@ export class ArticlesService {
   }
 
   async deleteArticle(deleteArticleDto: DeleteArticleDto) {
-    const article = await this.prisma.articles.findUnique({
+    const article = await this.prisma.article.findUnique({
       where: {
         id: deleteArticleDto.id,
       },
@@ -157,7 +157,7 @@ export class ArticlesService {
     }
 
     try {
-      await this.prisma.articles.delete({
+      await this.prisma.article.delete({
         where: {
           id: deleteArticleDto.id,
         },
