@@ -97,7 +97,6 @@ export class ArticlesService {
       ) {
         const exception = new NotFoundException('Article not found');
         console.log(exception.getResponse());
-        
         throw exception;
       }
 
@@ -106,7 +105,7 @@ export class ArticlesService {
   }
 
   async listArticles() {
-    return await this.prisma.articles.findMany({});
+    return this.prisma.articles.findMany({});
   }
 
   async getArticle(getArticleDto: GetArticleDto) {
@@ -140,10 +139,23 @@ export class ArticlesService {
       );
     }
 
-    await this.prisma.articles.delete({
-      where: {
-        id: deleteArticleDto.id,
-      },
-    });
+    try {
+      await this.prisma.articles.delete({
+        where: {
+          id: deleteArticleDto.id,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        const exception = new NotFoundException('Article not found');
+        console.log(exception.getResponse());
+        throw exception;
+      }
+
+      throw error;
+    }
   }
 }
