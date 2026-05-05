@@ -22,6 +22,15 @@ export class ArticlesService {
       },
     };
 
+    if (createArticleDto.tags?.length) {
+      data.tags = {
+        connectOrCreate: createArticleDto.tags.map((tag) => ({
+          where: { name: tag },
+          create: { name: tag },
+        })),
+      };
+    }
+
     try {
       return await this.prisma.articles.create({
         data,

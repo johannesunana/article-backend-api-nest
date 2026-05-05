@@ -23,9 +23,9 @@ export class CreateArticleDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  @Matches(/^[a-zA-Z0-9\s]+$/, {
+  @Matches(/^[a-zA-Z0-9\s-]+$/, {
     each: true,
-    message: 'Each tag can only contain letters, numbers, and spaces',
+    message: 'Each tag can only contain letters, numbers, spaces, and hyphens',
   })
   @Transform(({ value }) =>
     Array.isArray(value)
