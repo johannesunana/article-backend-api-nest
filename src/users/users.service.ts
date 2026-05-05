@@ -1,4 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
+import { Prisma } from '../../generated/prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -10,38 +11,48 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-    const existingEmail = await this.prisma.users.findUnique({
-      where: {
-        email: createUserDto.email,
-      },
-    });
+    try {
+      const [existingEmail, existingUsername] = await Promise.all([
+        this.prisma.users.findUnique({
+          where: { email: createUserDto.email },
+        }),
+        this.prisma.users.findUnique({
+          where: { username: createUserDto.username }
+        }),
+      ]);
   
-    const existingUsername = await this.prisma.users.findUnique({
-      where: {
-        username: createUserDto.username,
-      },
-    });
-  
-    if (existingEmail) {
-      throw new ConflictException('Email already exists');
-    }
-  
-    if (existingUsername) {
-      throw new ConflictException('Username already exists');
-    }   
+      if (existingEmail) {
+        throw new ConflictException('Email already exists');
+      }
+    
+      if (existingUsername) {
+        throw new ConflictException('Username already exists');
+      }   
+      
+      return await this.prisma.users.create({
+        data: {
+          ...createUserDto,
+          password: hashedPassword,
+        },
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const exception = new ConflictException('Email or username already exists');
+        console.log(exception.getResponse());
+        throw exception;
+      }
 
-    return await this.prisma.users.create({
-      data: {
-        ...createUserDto,
-        password: hashedPassword,
-      },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+      throw error;
+    }
   }
 }
