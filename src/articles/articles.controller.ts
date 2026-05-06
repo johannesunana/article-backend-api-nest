@@ -22,12 +22,19 @@ export class ArticlesController {
 
   @Post('create')
   async create(@Body() createArticleDto: CreateArticleDto) {
-    return await this.articlesService.createArticle(createArticleDto);
+    return await this.articlesService.createArticle(
+      createArticleDto,
+      createArticleDto.authorId,
+    );
   }
 
   @Patch('update')
   async update(@Body() updateArticleDto: UpdateArticleDto) {
-    return await this.articlesService.updateArticle(updateArticleDto.id, updateArticleDto);
+    return await this.articlesService.updateArticle(
+      updateArticleDto.id,
+      updateArticleDto,
+      updateArticleDto.authorId,
+    );
   }
 
   @Post('update')
@@ -54,7 +61,10 @@ export class ArticlesController {
   @Delete()
   @HttpCode(204)
   async deleteArticle(@Body() deleteArticleDto: DeleteArticleDto): Promise<void> {
-    await this.articlesService.deleteArticle(deleteArticleDto);
+    await this.articlesService.deleteArticle(
+      deleteArticleDto,
+      deleteArticleDto.authorId,
+    );
   }
 
 }

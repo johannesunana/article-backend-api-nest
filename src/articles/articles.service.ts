@@ -10,14 +10,14 @@ import { DeleteArticleDto } from './dto/delete-article.dto';
 export class ArticlesService {
   constructor(private prisma: PrismaService) {}
 
-  async createArticle(createArticleDto: CreateArticleDto) {
+  async createArticle(createArticleDto: CreateArticleDto, authorId: number) {
     const data: Prisma.ArticleCreateInput = {
       title: createArticleDto.title,
       description: createArticleDto.description,
       body: createArticleDto.body,
       author: {
         connect: {
-          id: createArticleDto.authorId,
+          id: authorId,
         },
       },
     };
@@ -49,7 +49,11 @@ export class ArticlesService {
     }
   }
 
-  async updateArticle(id: number, updateArticleDto: UpdateArticleDto) {
+  async updateArticle(
+    id: number,
+    updateArticleDto: UpdateArticleDto,
+    authorId: number,
+  ) {
     const article = await this.prisma.article.findUnique({
       where: {
         id,
@@ -60,7 +64,7 @@ export class ArticlesService {
       throw new NotFoundException('Article not found');
     }
 
-    if (article.authorId !== updateArticleDto.authorId) {
+    if (article.authorId !== authorId) {
       throw new ForbiddenException('You are not allowed to edit this article');
     }
 
@@ -139,7 +143,7 @@ export class ArticlesService {
     return article;
   }
 
-  async deleteArticle(deleteArticleDto: DeleteArticleDto) {
+  async deleteArticle(deleteArticleDto: DeleteArticleDto, authorId: number) {
     const article = await this.prisma.article.findUnique({
       where: {
         id: deleteArticleDto.id,
@@ -150,7 +154,7 @@ export class ArticlesService {
       throw new NotFoundException('Article not found');
     }
 
-    if (article.authorId !== deleteArticleDto.authorId) {
+    if (article.authorId !== authorId) {
       throw new ForbiddenException(
         'You are not allowed to delete this article',
       );
