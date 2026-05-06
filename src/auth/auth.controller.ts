@@ -25,15 +25,9 @@ export class AuthController {
     return await this.authService.login(loginDto);
   }
 
-  @Get('verify')
-  @HttpCode(HttpStatus.OK)
-  async verify(@Req() req: any) {
-    return await this.authService.verify(req);
-  }
-
   @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Req() req) {
+  @Get('verify')
+  verify(@Req() req) {
     return req.user;
   }
 }

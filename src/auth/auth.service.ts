@@ -55,29 +55,4 @@ export class AuthService {
       accessToken: this.jwtService.sign(payload),
     };
   }
-
-  async verify(req: any) {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-      throw new UnauthorizedException('No token provided');
-    }
-
-    try {
-      const decoded = this.jwtService.verify<JwtPayload>(token);
-
-      return {
-        id: decoded.sub,
-        email: decoded.email,
-        username: decoded.username,
-        issuedAt: decoded.iat ?? 0,
-        expiresAt: decoded.exp ?? 0,
-      };
-    } catch (err) {      
-        const exception = new UnauthorizedException('Invalid token');
-        console.log(exception.getResponse());
-        throw exception;
-    }
-  }
 }
