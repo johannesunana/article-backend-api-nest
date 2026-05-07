@@ -13,6 +13,18 @@ type JwtPayload = {
   exp?: number;
 };
 
+type AuthenticatedUser = {
+  id: number;
+  email: string;
+  username: string;
+  issuedAt: number;
+  expiresAt: number;
+};
+
+type AuthenticatedRequest = Request & {
+  user: AuthenticatedUser;
+};
+
 @Injectable()
 export class AuthService {
   constructor(
