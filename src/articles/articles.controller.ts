@@ -7,7 +7,6 @@ import {
   MethodNotAllowedException,
   Patch,
   Post,
-  UseGuards,
   Req
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
@@ -15,7 +14,7 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetArticleDto } from './dto/get-article.dto';
 import { DeleteArticleDto } from './dto/delete-article.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { Public } from 'src/public/public.decorator';
 
 @Controller('articles')
 export class ArticlesController {
@@ -23,7 +22,6 @@ export class ArticlesController {
     private readonly articlesService: ArticlesService
   ) {}
 
-  @UseGuards(AuthGuard)
   @Post('create')
   async create(
     @Req() req,
@@ -35,7 +33,6 @@ export class ArticlesController {
     );
   }
   
-  @UseGuards(AuthGuard)
   @Patch('update')
   async update(
     @Req() req,
@@ -47,28 +44,31 @@ export class ArticlesController {
     );
   }
 
+  @Public()
   @Post('update')
   async updateWithPost() {
     throw new MethodNotAllowedException('Use PATCH /articles/update');
   }
   
+  @Public()
   @Get()
   async list() {
     return await this.articlesService.listArticles();
   }
 
+  @Public()
   @Post('get')
   @HttpCode(200)
   async getArticle(@Body() getArticleDto: GetArticleDto) {
     return await this.articlesService.getArticle(getArticleDto);
   }
 
+  @Public()
   @Get('get')
   async getArticleWithGet() {
     throw new MethodNotAllowedException('Use POST /articles/get');
   }
   
-  @UseGuards(AuthGuard)
   @Delete()
   @HttpCode(204)
   async deleteArticle(
