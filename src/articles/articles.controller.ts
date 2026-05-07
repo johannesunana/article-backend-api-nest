@@ -34,13 +34,16 @@ export class ArticlesController {
       req.user.sub
     );
   }
-
+  
+  @UseGuards(AuthGuard)
   @Patch('update')
-  async update(@Body() updateArticleDto: UpdateArticleDto) {
+  async update(
+    @Req() req,
+    @Body() updateArticleDto: UpdateArticleDto) {
     return await this.articlesService.updateArticle(
       updateArticleDto.id,
       updateArticleDto,
-      updateArticleDto.authorId,
+      req.user.sub
     );
   }
 

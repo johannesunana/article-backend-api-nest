@@ -7,11 +7,6 @@ export class UpdateArticleDto {
   @Min(1)
   id: number;
 
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  authorId: number;
-
   @IsOptional()
   @IsString()
   title?: string | null;

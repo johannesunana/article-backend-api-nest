@@ -49,14 +49,10 @@ export class ArticlesService {
     }
   }
 
-  async updateArticle(
-    id: number,
-    updateArticleDto: UpdateArticleDto,
-    authorId: number,
-  ) {
+  async updateArticle(id: number, updateArticleDto: UpdateArticleDto, authorId: number) {
     const article = await this.prisma.article.findUnique({
       where: {
-        id,
+        id: id,
       },
     });
 
@@ -65,7 +61,9 @@ export class ArticlesService {
     }
 
     if (article.authorId !== authorId) {
-      throw new ForbiddenException('You are not allowed to edit this article');
+      const exception = new ForbiddenException('You are not allowed to edit this article');
+      console.log(exception.getResponse());
+      throw exception;
     }
 
     const data: Prisma.ArticleUpdateInput = {};
