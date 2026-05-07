@@ -13,12 +13,7 @@ export class CreateArticleDto {
   @IsNotEmpty()
   @IsString()
   body: string;
-
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  authorId: number;
-
+  
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()

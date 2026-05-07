@@ -7,12 +7,15 @@ import {
   MethodNotAllowedException,
   Patch,
   Post,
+  UseGuards,
+  Req
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetArticleDto } from './dto/get-article.dto';
 import { DeleteArticleDto } from './dto/delete-article.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('articles')
 export class ArticlesController {
@@ -20,11 +23,15 @@ export class ArticlesController {
     private readonly articlesService: ArticlesService
   ) {}
 
+  @UseGuards(AuthGuard)
   @Post('create')
-  async create(@Body() createArticleDto: CreateArticleDto) {
+  async create(
+    @Req() req,
+    @Body() createArticleDto: CreateArticleDto
+  ) {
     return await this.articlesService.createArticle(
       createArticleDto,
-      createArticleDto.authorId,
+      req.user.sub
     );
   }
 
