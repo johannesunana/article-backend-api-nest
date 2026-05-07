@@ -48,7 +48,6 @@ export class UsersService {
         error.code === 'P2002'
       ) {
         const exception = new ConflictException('Email or username already exists');
-        console.log(exception.getResponse());
         throw exception;
       }
 
