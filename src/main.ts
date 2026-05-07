@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
   app.use(morgan(':date[iso] - :method :url :status \(:response-time ms\)'));
-  
+
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
   }));
