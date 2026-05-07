@@ -153,9 +153,9 @@ export class ArticlesService {
     }
 
     if (article.authorId !== authorId) {
-      throw new ForbiddenException(
-        'You are not allowed to delete this article',
-      );
+      const exception = new ForbiddenException('You are not allowed to delete this article');
+      console.log(exception.getResponse());
+      throw exception;
     }
 
     try {

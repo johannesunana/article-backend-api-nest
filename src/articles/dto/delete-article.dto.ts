@@ -6,9 +6,4 @@ export class DeleteArticleDto {
   @IsInt()
   @Min(1)
   id: number;
-
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  authorId: number;
 }

@@ -68,12 +68,15 @@ export class ArticlesController {
     throw new MethodNotAllowedException('Use POST /articles/get');
   }
   
+  @UseGuards(AuthGuard)
   @Delete()
   @HttpCode(204)
-  async deleteArticle(@Body() deleteArticleDto: DeleteArticleDto): Promise<void> {
+  async deleteArticle(
+    @Req() req,
+    @Body() deleteArticleDto: DeleteArticleDto): Promise<void> {
     await this.articlesService.deleteArticle(
       deleteArticleDto,
-      deleteArticleDto.authorId,
+      req.user.sub
     );
   }
 
