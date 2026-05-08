@@ -36,23 +36,14 @@ export class ArticlesService {
         data,
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        const exception = new NotFoundException('User not found');
-        console.log(exception.getResponse());
-        throw exception;
-      }
-
-      throw error;
+      this.handlePrismaError(error, 'User not found');
     }
   }
 
   async updateArticle(id: number, updateArticleDto: UpdateArticleDto, authorId: number) {
     const article = await this.prisma.article.findUnique({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -62,7 +53,6 @@ export class ArticlesService {
 
     if (article.authorId !== authorId) {
       const exception = new ForbiddenException('You are not allowed to edit this article');
-      console.log(exception.getResponse());
       throw exception;
     }
 
@@ -110,16 +100,7 @@ export class ArticlesService {
         data,
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        const exception = new NotFoundException('Article not found');
-        console.log(exception.getResponse());
-        throw exception;
-      }
-
-      throw error;
+      this.handlePrismaError(error, 'Article not found');
     }
   }
 
@@ -164,16 +145,18 @@ export class ArticlesService {
         },
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        const exception = new NotFoundException('Article not found');
-        console.log(exception.getResponse());
-        throw exception;
-      }
-
-      throw error;
+        this.handlePrismaError(error, 'Article not found');
     }
   }
+
+  private handlePrismaError(error: unknown, message: string): never {
+  if (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === 'P2025'
+  ) {
+    throw new NotFoundException(message);
+  }
+
+  throw error;
+}
 }
