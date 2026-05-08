@@ -23,8 +23,8 @@ export class CommentsService {
           id: createCommentDto.articleId
         },
       },
-    } 
-    
+    }
+
     try {
       return await this.prisma.comment.create({
         data,
