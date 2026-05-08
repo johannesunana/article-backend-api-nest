@@ -47,6 +47,10 @@ export class CommentsService {
       throw new ForbiddenException('You are not allowed to edit this comment');
     }
 
+    const data: Prisma.CommentUpdateInput = {
+      body: updateCommentDto.body,
+    };
+
     if (comment.body === updateCommentDto.body) {
       return comment;
     }
@@ -56,12 +60,10 @@ export class CommentsService {
         where: {
           id: updateCommentDto.id,
         },
-        data: {
-          body: updateCommentDto.body,
-        },
+        data,
       });
     } catch (error) {
-        this.handlePrismaNotFoundError(error, 'Comment not found');
+      this.handlePrismaNotFoundError(error, 'Comment not found');
     }
   }
 
