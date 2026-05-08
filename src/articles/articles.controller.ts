@@ -38,7 +38,6 @@ export class ArticlesController {
     @Req() req,
     @Body() updateArticleDto: UpdateArticleDto) {
     return await this.articlesService.updateArticle(
-      updateArticleDto.id,
       updateArticleDto,
       req.user.sub
     );
