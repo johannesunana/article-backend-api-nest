@@ -1,16 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCommentDto } from './dto/create-comment';
+import { UpdateCommentDto } from './dto/update-comment';
 
 @Injectable()
 export class CommentsService {
   constructor(private prisma: PrismaService) {}
 
-  async createComment(
-    createCommentDto: CreateCommentDto,
-    authorId: number
-  ) {
+  async createComment(createCommentDto: CreateCommentDto, authorId: number) {
     const data: Prisma.CommentCreateInput = {
       body: createCommentDto.body,
       author: {
@@ -30,11 +28,44 @@ export class CommentsService {
         data,
       });
     } catch (error) {
-      this.handlePrismaError(error, 'User or article not found');
+      this.handlePrismaForeignKeyError(error, 'User or article not found');
     }
   }
 
-  private handlePrismaError(error: unknown, message: string): never {
+  async updateComment(updateCommentDto: UpdateCommentDto, authorId: number) {
+    const comment = await this.prisma.comment.findUnique({
+      where: {
+        id: updateCommentDto.id,
+      },
+    });
+    
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    if (comment.authorId !== authorId) {
+      throw new ForbiddenException('You are not allowed to edit this comment');
+    }
+
+    if (comment.body === updateCommentDto.body) {
+      return comment;
+    }
+
+    try {
+      return await this.prisma.comment.update({
+        where: {
+          id: updateCommentDto.id,
+        },
+        data: {
+          body: updateCommentDto.body,
+        },
+      });
+    } catch (error) {
+        this.handlePrismaNotFoundError(error, 'Comment not found');
+    }
+  }
+
+  private handlePrismaForeignKeyError(error: unknown, message: string): never {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2003'
@@ -44,5 +75,15 @@ export class CommentsService {
 
     throw error;
   }
-}
 
+  private handlePrismaNotFoundError(error: unknown, message: string): never {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2025'
+    ) {
+      throw new NotFoundException(message);
+    }
+
+    throw error;
+  }
+}
