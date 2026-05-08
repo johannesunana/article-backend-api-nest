@@ -21,21 +21,27 @@ model User {
   createdAt DateTime  @default(now()) @db.Timestamptz(3)
   updatedAt DateTime  @updatedAt @db.Timestamptz(3)
   articles  Article[]
+  comments  Comment[]
 
+  @@index([createdAt])
   @@map("users")
 }
 
 model Article {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String
   body        String
   authorId    Int
-  createdAt   DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
-  author      User     @relation(fields: [authorId], references: [id])
-  tags        Tag[]    @relation("articlesTotags")
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags        Tag[]     @relation("articlesTotags")
+  comments    Comment[]
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(3)
 
+  @@index([authorId])
+  @@index([createdAt])
+  @@index([authorId, createdAt])
   @@map("articles")
 }
 
@@ -47,6 +53,22 @@ model Tag {
   articles  Article[] @relation("articlesTotags")
 
   @@map("tags")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  comment   String
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  articleId Int
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([authorId])
+  @@index([createdAt])
+  @@index([articleId, createdAt])
+  @@map("comments")
 }
 
 view ArticleDetailView {
