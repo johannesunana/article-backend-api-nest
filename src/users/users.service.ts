@@ -43,15 +43,18 @@ export class UsersService {
         },
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        const exception = new ConflictException('Email or username already exists');
-        throw exception;
-      }
-
-      throw error;
+      this.handlePrismaError(error, 'Email or username already exists');
     }
+  }
+
+  private handlePrismaError(error: unknown, message: string): never {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      throw new ConflictException(message);
+    }
+
+    throw error;
   }
 }

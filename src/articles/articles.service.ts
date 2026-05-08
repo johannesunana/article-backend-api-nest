@@ -52,8 +52,7 @@ export class ArticlesService {
     }
 
     if (article.authorId !== authorId) {
-      const exception = new ForbiddenException('You are not allowed to edit this article');
-      throw exception;
+      throw new ForbiddenException('You are not allowed to edit this article');
     }
 
     const data: Prisma.ArticleUpdateInput = {};
@@ -134,8 +133,7 @@ export class ArticlesService {
     }
 
     if (article.authorId !== authorId) {
-      const exception = new ForbiddenException('You are not allowed to delete this article');
-      throw exception;
+      throw new ForbiddenException('You are not allowed to delete this article');
     }
 
     try {
@@ -145,18 +143,18 @@ export class ArticlesService {
         },
       });
     } catch (error) {
-        this.handlePrismaError(error, 'Article not found');
+      this.handlePrismaError(error, 'Article not found');
     }
   }
 
   private handlePrismaError(error: unknown, message: string): never {
-  if (
-    error instanceof Prisma.PrismaClientKnownRequestError &&
-    error.code === 'P2025'
-  ) {
-    throw new NotFoundException(message);
-  }
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2025'
+    ) {
+      throw new NotFoundException(message);
+    }
 
-  throw error;
-}
+    throw error;
+  }
 }
