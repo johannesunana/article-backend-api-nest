@@ -3,6 +3,8 @@ import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCommentDto } from './dto/create-comment';
 import { UpdateCommentDto } from './dto/update-comment';
+import { GetCommentDto } from './dto/get-comment';
+import { DeleteCommentDto } from './dto/delete-comment';
 
 @Injectable()
 export class CommentsService {
@@ -66,6 +68,50 @@ export class CommentsService {
       this.handlePrismaNotFoundError(error, 'Comment not found');
     }
   }
+
+  async listComments() {
+    return this.prisma.comment.findMany({});
+  }
+
+  async getComment(getCommentDto: GetCommentDto) {
+    const comment = await this.prisma.comment.findUnique({
+      where: {
+        id: getCommentDto.id,
+      },
+    });
+
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    return comment;
+  }
+
+  async deleteComment(deleteCommentDto: DeleteCommentDto, authorId: number) {
+    const comment = await this.prisma.comment.findUnique({
+      where: {
+        id: deleteCommentDto.id,
+      },
+    });
+
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    if (comment.authorId !== authorId) {
+      throw new ForbiddenException('You are not allowed to delete this comment');
+    }
+
+    try {
+      await this.prisma.comment.delete({
+        where: {
+          id: deleteCommentDto.id,
+        },
+      });
+    } catch (error) {
+      this.handlePrismaNotFoundError(error, 'Comment not found');
+    }
+  };
 
   private handlePrismaForeignKeyError(error: unknown, message: string): never {
     if (
