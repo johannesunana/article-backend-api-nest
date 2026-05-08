@@ -8,6 +8,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { ArticlesModule } from './articles/articles.module';
 import { TagsModule } from './tags/tags.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TagsModule } from './tags/tags.module';
     PrismaModule,
     ArticlesModule,
     TagsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
