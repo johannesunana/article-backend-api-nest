@@ -119,7 +119,7 @@ export class ArticlesService {
     }
 
     return article;
-  }
+  };
 
   async deleteArticle(deleteArticleDto: DeleteArticleDto, authorId: number) {
     const article = await this.prisma.article.findUnique({
@@ -145,7 +145,7 @@ export class ArticlesService {
     } catch (error) {
       this.handlePrismaError(error, 'Article not found');
     }
-  }
+  };
 
   private handlePrismaError(error: unknown, message: string): never {
     if (
@@ -156,5 +156,5 @@ export class ArticlesService {
     }
 
     throw error;
-  }
-}
+  };
+};
