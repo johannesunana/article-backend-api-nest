@@ -5,6 +5,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { GetCommentDto } from './dto/get-comment.dto';
 import { DeleteCommentDto } from './dto/delete-comment.dto';
+import { ListArticleCommentsDto } from './dto/list-article-comments.dto';
 
 @Injectable()
 export class CommentsService {
@@ -71,6 +72,29 @@ export class CommentsService {
 
   async listComments() {
     return this.prisma.comment.findMany({});
+  }
+
+  async listCommentsFromArticle(
+    listArticleCommentsDto: ListArticleCommentsDto
+  ) {
+    const article = await this.prisma.article.findUnique({
+      where: {
+        id: listArticleCommentsDto.articleId,
+      },
+    });
+
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+
+    return await this.prisma.comment.findMany({
+      where: {
+        articleId: listArticleCommentsDto.articleId,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
   }
 
   async getComment(getCommentDto: GetCommentDto) {

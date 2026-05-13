@@ -5,6 +5,7 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { DeleteCommentDto } from './dto/delete-comment.dto';
 import { Public } from 'src/public/public.decorator';
 import { GetCommentDto } from './dto/get-comment.dto';
+import { ListArticleCommentsDto } from './dto/list-article-comments.dto';
 
 @Controller('comments')
 export class CommentsController {
@@ -39,6 +40,17 @@ export class CommentsController {
   @HttpCode(200)
   async getComment(@Body() getCommentDto: GetCommentDto) {
     return await this.commentsService.getComment(getCommentDto);
+  }
+
+  @Public()
+  @Post('article')
+  @HttpCode(200)
+  async listCommentsFromArticle(
+    @Body() listArticleCommentsDto: ListArticleCommentsDto
+  ) {
+    return await this.commentsService.listCommentsFromArticle(
+      listArticleCommentsDto
+    );
   }
 
   @Delete()
