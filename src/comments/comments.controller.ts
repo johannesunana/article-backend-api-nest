@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, HttpCode, Patch, Post, Req } from '@nestjs/common';
 import { CommentsService } from './comments.service';
-import { CreateCommentDto } from './dto/create-comment';
-import { UpdateCommentDto } from './dto/update-comment';
-import { DeleteCommentDto } from './dto/delete-comment';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
+import { DeleteCommentDto } from './dto/delete-comment.dto';
 import { Public } from 'src/public/public.decorator';
-import { GetCommentDto } from './dto/get-comment';
+import { GetCommentDto } from './dto/get-comment.dto';
 
 @Controller('comments')
 export class CommentsController {

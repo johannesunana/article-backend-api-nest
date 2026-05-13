@@ -1,10 +1,10 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateCommentDto } from './dto/create-comment';
-import { UpdateCommentDto } from './dto/update-comment';
-import { GetCommentDto } from './dto/get-comment';
-import { DeleteCommentDto } from './dto/delete-comment';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
+import { GetCommentDto } from './dto/get-comment.dto';
+import { DeleteCommentDto } from './dto/delete-comment.dto';
 
 @Injectable()
 export class CommentsService {
