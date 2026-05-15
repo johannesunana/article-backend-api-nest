@@ -112,13 +112,35 @@ export class ArticlesService {
       where: {
         id: getArticleDto.id,
       },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        body: true,
+        createdAt: true,
+        updatedAt: true,
+        author: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        tags: {
+          select: {
+            name: true
+          },
+        },
+      },
     });
 
     if (!article) {
       throw new NotFoundException('Article not found');
     }
 
-    return article;
+    return {
+      ...article,
+      tags: article.tags.map((tag) => tag.name),
+    }
   };
 
   async deleteArticle(deleteArticleDto: DeleteArticleDto, authorId: number) {
