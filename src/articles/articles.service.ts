@@ -104,7 +104,36 @@ export class ArticlesService {
   }
 
   async listArticles() {
-    return this.prisma.article.findMany({});
+    // return this.prisma.article.findMany({});
+    const articles = await this.prisma.article.findMany({
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        body: true,
+        createdAt: true,
+        updatedAt: true,
+        author: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        tags: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+
+    return articles.map((article) => ({
+      ...article,
+      tags: article.tags.map((tag) => tag.name),
+    }));
   }
 
   async getArticle(getArticleDto: GetArticleDto) {
