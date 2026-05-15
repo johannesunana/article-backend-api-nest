@@ -7,6 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { TokenExpiredError } from 'jsonwebtoken';
 import { IS_PUBLIC_KEY } from '../public/public.decorator';
 
 @Injectable()
@@ -34,7 +35,11 @@ export class AuthGuard implements CanActivate {
 
     try {
       request.user = await this.jwtService.verifyAsync(token);
-    } catch {
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException('Token expired');
+      }
+
       throw new UnauthorizedException('Invalid token');
     }
 
