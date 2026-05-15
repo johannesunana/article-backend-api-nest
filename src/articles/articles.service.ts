@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -80,10 +84,7 @@ export class ArticlesService {
       data.description = updateArticleDto.description;
     }
 
-    if (
-      updateArticleDto.body !== undefined &&
-      updateArticleDto.body !== null
-    ) {
+    if (updateArticleDto.body !== undefined && updateArticleDto.body !== null) {
       data.body = updateArticleDto.body;
     }
 
@@ -104,7 +105,6 @@ export class ArticlesService {
   }
 
   async listArticles() {
-    // return this.prisma.article.findMany({});
     const articles = await this.prisma.article.findMany({
       select: {
         id: true,
@@ -156,7 +156,7 @@ export class ArticlesService {
         },
         tags: {
           select: {
-            name: true
+            name: true,
           },
         },
       },
@@ -169,8 +169,8 @@ export class ArticlesService {
     return {
       ...article,
       tags: article.tags.map((tag) => tag.name),
-    }
-  };
+    };
+  }
 
   async deleteArticle(deleteArticleDto: DeleteArticleDto, authorId: number) {
     const article = await this.prisma.article.findUnique({
@@ -184,7 +184,9 @@ export class ArticlesService {
     }
 
     if (article.authorId !== authorId) {
-      throw new ForbiddenException('You are not allowed to delete this article');
+      throw new ForbiddenException(
+        'You are not allowed to delete this article',
+      );
     }
 
     try {
@@ -196,7 +198,7 @@ export class ArticlesService {
     } catch (error) {
       this.handlePrismaError(error, 'Article not found');
     }
-  };
+  }
 
   private handlePrismaError(error: unknown, message: string): never {
     if (
@@ -207,5 +209,5 @@ export class ArticlesService {
     }
 
     throw error;
-  };
-};
+  }
+}

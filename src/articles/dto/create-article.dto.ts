@@ -1,5 +1,14 @@
 import { Type, Transform } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsString, Min, IsOptional, IsArray, ArrayNotEmpty, Matches } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Min,
+  IsOptional,
+  IsArray,
+  ArrayNotEmpty,
+  Matches,
+} from 'class-validator';
 
 export class CreateArticleDto {
   @IsNotEmpty()
@@ -13,7 +22,7 @@ export class CreateArticleDto {
   @IsNotEmpty()
   @IsString()
   body: string;
-  
+
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
@@ -25,11 +34,7 @@ export class CreateArticleDto {
   @Transform(({ value }) =>
     Array.isArray(value)
       ? value.map((tag) =>
-          tag
-            .trim()
-            .toLowerCase()
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-'),
+          tag.trim().toLowerCase().replace(/\s+/g, '-').replace(/-+/g, '-'),
         )
       : value,
   )

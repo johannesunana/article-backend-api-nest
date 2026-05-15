@@ -5,9 +5,7 @@ import { Public } from 'src/public/public.decorator';
 
 @Controller('auth')
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Public()
   @Post('register')

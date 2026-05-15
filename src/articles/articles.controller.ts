@@ -6,7 +6,7 @@ import {
   HttpCode,
   Patch,
   Post,
-  Req
+  Req,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -17,31 +17,24 @@ import { Public } from 'src/public/public.decorator';
 
 @Controller('articles')
 export class ArticlesController {
-  constructor(
-    private readonly articlesService: ArticlesService
-  ) {}
+  constructor(private readonly articlesService: ArticlesService) {}
 
   @Post('create')
-  async create(
-    @Req() req,
-    @Body() createArticleDto: CreateArticleDto
-  ) {
+  async create(@Req() req, @Body() createArticleDto: CreateArticleDto) {
     return await this.articlesService.createArticle(
       createArticleDto,
-      req.user.sub
+      req.user.sub,
     );
   }
-  
+
   @Patch('update')
-  async update(
-    @Req() req,
-    @Body() updateArticleDto: UpdateArticleDto) {
+  async update(@Req() req, @Body() updateArticleDto: UpdateArticleDto) {
     return await this.articlesService.updateArticle(
       updateArticleDto,
-      req.user.sub
+      req.user.sub,
     );
   }
-  
+
   @Public()
   @Get()
   async list() {
@@ -59,11 +52,8 @@ export class ArticlesController {
   @HttpCode(204)
   async deleteArticle(
     @Req() req,
-    @Body() deleteArticleDto: DeleteArticleDto): Promise<void> {
-    await this.articlesService.deleteArticle(
-      deleteArticleDto,
-      req.user.sub
-    );
+    @Body() deleteArticleDto: DeleteArticleDto,
+  ): Promise<void> {
+    await this.articlesService.deleteArticle(deleteArticleDto, req.user.sub);
   }
-
 }

@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, HttpCode, Patch, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Patch,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -9,15 +18,13 @@ import { ListArticleCommentsDto } from './dto/list-article-comments.dto';
 
 @Controller('comments')
 export class CommentsController {
-  constructor(
-    private readonly commentsService: CommentsService
-  ) {}
-  
+  constructor(private readonly commentsService: CommentsService) {}
+
   @Post('create')
   async create(@Req() req, @Body() createCommentDto: CreateCommentDto) {
     return await this.commentsService.createComment(
       createCommentDto,
-      req.user.sub
+      req.user.sub,
     );
   }
 
@@ -25,7 +32,7 @@ export class CommentsController {
   async update(@Req() req, @Body() updateCommentDto: UpdateCommentDto) {
     return await this.commentsService.updateComment(
       updateCommentDto,
-      req.user.sub
+      req.user.sub,
     );
   }
 
@@ -46,20 +53,16 @@ export class CommentsController {
   @Post('article')
   @HttpCode(200)
   async listCommentsFromArticle(
-    @Body() listArticleCommentsDto: ListArticleCommentsDto
+    @Body() listArticleCommentsDto: ListArticleCommentsDto,
   ) {
     return await this.commentsService.listCommentsFromArticle(
-      listArticleCommentsDto
+      listArticleCommentsDto,
     );
   }
 
   @Delete()
   @HttpCode(204)
   async deleteComment(@Req() req, @Body() deleteCommentDto: DeleteCommentDto) {
-    await this.commentsService.deleteComment(
-      deleteCommentDto,
-      req.user.sub
-    );
+    await this.commentsService.deleteComment(deleteCommentDto, req.user.sub);
   }
 }
-

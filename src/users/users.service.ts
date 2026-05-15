@@ -17,18 +17,18 @@ export class UsersService {
           where: { email: createUserDto.email },
         }),
         this.prisma.user.findUnique({
-          where: { username: createUserDto.username }
+          where: { username: createUserDto.username },
         }),
       ]);
-  
+
       if (existingEmail) {
         throw new ConflictException('Email already exists');
       }
-    
+
       if (existingUsername) {
         throw new ConflictException('Username already exists');
-      }   
-      
+      }
+
       return await this.prisma.user.create({
         data: {
           ...createUserDto,

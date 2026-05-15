@@ -1,5 +1,13 @@
 import { Type, Transform } from 'class-transformer';
-import { IsInt, IsString, Min, IsOptional, IsArray, ArrayNotEmpty, Matches } from 'class-validator';
+import {
+  IsInt,
+  IsString,
+  Min,
+  IsOptional,
+  IsArray,
+  ArrayNotEmpty,
+  Matches,
+} from 'class-validator';
 
 export class UpdateArticleDto {
   @Type(() => Number)
@@ -30,14 +38,9 @@ export class UpdateArticleDto {
   @Transform(({ value }) =>
     Array.isArray(value)
       ? value.map((tag) =>
-          tag
-            .trim()
-            .toLowerCase()
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-'),
+          tag.trim().toLowerCase().replace(/\s+/g, '-').replace(/-+/g, '-'),
         )
       : value,
   )
   tags?: string[];
-
 }

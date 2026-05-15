@@ -19,9 +19,7 @@ export class AuthController {
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(
-    @Body() loginDto: LoginEmailDto | LoginUsernameDto,
-  ) {
+  async login(@Body() loginDto: LoginEmailDto | LoginUsernameDto) {
     return await this.authService.login(loginDto);
   }
 

@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -21,10 +25,10 @@ export class CommentsService {
       },
       article: {
         connect: {
-          id: createCommentDto.articleId
+          id: createCommentDto.articleId,
         },
       },
-    }
+    };
 
     try {
       return await this.prisma.comment.create({
@@ -41,7 +45,7 @@ export class CommentsService {
         id: updateCommentDto.id,
       },
     });
-    
+
     if (!comment) {
       throw new NotFoundException('Comment not found');
     }
@@ -75,7 +79,7 @@ export class CommentsService {
   }
 
   async listCommentsFromArticle(
-    listArticleCommentsDto: ListArticleCommentsDto
+    listArticleCommentsDto: ListArticleCommentsDto,
   ) {
     const article = await this.prisma.article.findUnique({
       where: {
@@ -123,7 +127,9 @@ export class CommentsService {
     }
 
     if (comment.authorId !== authorId) {
-      throw new ForbiddenException('You are not allowed to delete this comment');
+      throw new ForbiddenException(
+        'You are not allowed to delete this comment',
+      );
     }
 
     try {
@@ -135,7 +141,7 @@ export class CommentsService {
     } catch (error) {
       this.handlePrismaNotFoundError(error, 'Comment not found');
     }
-  };
+  }
 
   private handlePrismaForeignKeyError(error: unknown, message: string): never {
     if (
