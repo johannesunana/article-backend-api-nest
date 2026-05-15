@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  MethodNotAllowedException,
   Patch,
   Post,
   Req
@@ -42,12 +41,6 @@ export class ArticlesController {
       req.user.sub
     );
   }
-
-  @Public()
-  @Post('update')
-  async updateWithPost() {
-    throw new MethodNotAllowedException('Use PATCH /articles/update');
-  }
   
   @Public()
   @Get()
@@ -62,12 +55,6 @@ export class ArticlesController {
     return await this.articlesService.getArticle(getArticleDto);
   }
 
-  @Public()
-  @Get('get')
-  async getArticleWithGet() {
-    throw new MethodNotAllowedException('Use POST /articles/get');
-  }
-  
   @Delete()
   @HttpCode(204)
   async deleteArticle(
