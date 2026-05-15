@@ -8,7 +8,7 @@ export class TagsController {
 
   @Public()
   @Get()
-  async findAll() {
-    return await this.tagsService.findAll();
+  async list() {
+    return await this.tagsService.listTags();
   }
 }

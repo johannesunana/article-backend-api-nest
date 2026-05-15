@@ -6,7 +6,7 @@ import { CreateTagDto } from './dto/create-tag.dto';
 export class TagsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
+  async listTags() {
     return this.prisma.tag.findMany({
       orderBy: {
         name: 'asc',
