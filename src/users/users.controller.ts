@@ -69,7 +69,7 @@ export class UsersController {
     },
   })
   @ApiConflictResponse({
-    description: 'email or username already exists.',
+    description: 'Email or username already exists.',
     schema: {
       example: {
         message: 'Email already exists',
