@@ -14,8 +14,10 @@ import { Public } from 'src/public/public.decorator';
 import {
   ApiBody,
   ApiExtraModels,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
   getSchemaPath
 } from '@nestjs/swagger';
 
@@ -43,8 +45,33 @@ export class AuthController {
           email: 'email@solx.ph',
           password: 'password123'
         } as LoginEmailDto
+      },
+      username: {
+        summary: 'Login using username',
+        value: {
+          username: 'username123',
+          password: 'password123'
+        } as LoginUsernameDto
       }
     }
+  })
+  @ApiOkResponse({
+    description: 'User authenticated successfully.',
+    schema: {
+      example: {
+        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Invalid email/username or password.',
+    schema: {
+      example: {
+        message: 'Invalid credentials',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
   })
   @Post('login')
   @HttpCode(HttpStatus.OK)
