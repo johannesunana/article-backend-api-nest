@@ -1,7 +1,7 @@
 export class AuthVerifyResponseDto {
-  id: number;
+  sub: number;
   email: string;
   username: string;
-  issuedAt: number;
-  expiresAt: number;
+  iat: number;
+  exp: number;
 }

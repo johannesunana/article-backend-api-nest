@@ -10,6 +10,8 @@ import {
 import { AuthService } from './auth.service';
 import { LoginEmailDto } from './dto/login-email.dto';
 import { LoginUsernameDto } from './dto/login-username.dto';
+import { AuthLoginResponseDto } from './dto/auth-login-response.dto';
+import { AuthVerifyResponseDto } from './dto/auth-verify-response.dto';
 import { Public } from 'src/public/public.decorator';
 import {
   ApiBearerAuth,
@@ -58,11 +60,7 @@ export class AuthController {
   })
   @ApiOkResponse({
     description: 'User authenticated successfully.',
-    schema: {
-      example: {
-        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
-      },
-    },
+    type: AuthLoginResponseDto,
   })
   @ApiUnauthorizedResponse({
     description: 'Invalid email/username or password.',
@@ -86,15 +84,7 @@ export class AuthController {
   })
   @ApiOkResponse({
     description: 'Authenticated user details returned successfully.',
-    schema: {
-      example: {
-        sub: 1,
-        email: 'email@example.com',
-        username: 'username',
-        iat: 1710000000,
-        exp: 1710003600,
-      },
-    },
+    type: AuthVerifyResponseDto,
   })
   @ApiUnauthorizedResponse({
     description: 'User token is invalid or expired.',
