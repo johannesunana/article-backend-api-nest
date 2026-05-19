@@ -19,6 +19,7 @@ async function bootstrap() {
     .setTitle('Artlcle Backend API')
     .setDescription('Simple Backend API for Article Publishing')
     .setVersion('0.0.1')
+    .addBearerAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

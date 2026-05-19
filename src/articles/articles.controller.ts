@@ -14,11 +14,13 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetArticleDto } from './dto/get-article.dto';
 import { DeleteArticleDto } from './dto/delete-article.dto';
 import { Public } from 'src/public/public.decorator';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
+  @ApiBearerAuth()
   @Post('create')
   async create(@Req() req, @Body() createArticleDto: CreateArticleDto) {
     return await this.articlesService.createArticle(
