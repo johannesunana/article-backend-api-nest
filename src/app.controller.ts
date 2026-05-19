@@ -9,7 +9,7 @@ export class AppController {
   @Get()
   getRoot() {
     return {
-      message: 'Article Backend API'
+      message: 'Article Backend API',
     };
   }
 }

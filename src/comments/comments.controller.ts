@@ -82,7 +82,7 @@ export class CommentsController {
       req.user.sub,
     );
   }
-  
+
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Update a comment',

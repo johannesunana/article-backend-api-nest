@@ -21,7 +21,7 @@ import {
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
-  getSchemaPath
+  getSchemaPath,
 } from '@nestjs/swagger';
 
 @ApiTags('Auth')
@@ -31,9 +31,9 @@ export class AuthController {
 
   @Public()
   @ApiOperation({
-    summary: 'Authenticate a user'
+    summary: 'Authenticate a user',
   })
-  @ApiExtraModels(LoginEmailDto, LoginUsernameDto )
+  @ApiExtraModels(LoginEmailDto, LoginUsernameDto)
   @ApiBody({
     schema: {
       oneOf: [
@@ -46,17 +46,17 @@ export class AuthController {
         summary: 'Login using email address',
         value: {
           email: 'email@solx.ph',
-          password: 'password123'
-        } as LoginEmailDto
+          password: 'password123',
+        },
       },
       username: {
         summary: 'Login using username',
         value: {
           username: 'username123',
-          password: 'password123'
-        } as LoginUsernameDto
-      }
-    }
+          password: 'password123',
+        },
+      },
+    },
   })
   @ApiOkResponse({
     description: 'User authenticated successfully.',
