@@ -12,6 +12,7 @@ import { LoginEmailDto } from './dto/login-email.dto';
 import { LoginUsernameDto } from './dto/login-username.dto';
 import { Public } from 'src/public/public.decorator';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiExtraModels,
   ApiOkResponse,
@@ -79,6 +80,32 @@ export class AuthController {
     return await this.authService.login(loginDto);
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Verify the authenticated user token',
+  })
+  @ApiOkResponse({
+    description: 'Authenticated user details returned successfully.',
+    schema: {
+      example: {
+        sub: 1,
+        email: 'email@example.com',
+        username: 'username',
+        iat: 1710000000,
+        exp: 1710003600,
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'User token is invalid or expired.',
+    schema: {
+      example: {
+        message: 'Token expired',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
   @Get('verify')
   verify(@Req() req) {
     return req.user;
