@@ -15,11 +15,14 @@ import { DeleteCommentDto } from './dto/delete-comment.dto';
 import { Public } from 'src/public/public.decorator';
 import { GetCommentDto } from './dto/get-comment.dto';
 import { ListArticleCommentsDto } from './dto/list-article-comments.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Comments')
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
+  @ApiBearerAuth()
   @Post('create')
   async create(@Req() req, @Body() createCommentDto: CreateCommentDto) {
     return await this.commentsService.createComment(
@@ -27,7 +30,8 @@ export class CommentsController {
       req.user.sub,
     );
   }
-
+  
+  @ApiBearerAuth()
   @Patch('update')
   async update(@Req() req, @Body() updateCommentDto: UpdateCommentDto) {
     return await this.commentsService.updateComment(
@@ -60,6 +64,7 @@ export class CommentsController {
     );
   }
 
+  @ApiBearerAuth()  
   @Delete()
   @HttpCode(204)
   async deleteComment(@Req() req, @Body() deleteCommentDto: DeleteCommentDto) {

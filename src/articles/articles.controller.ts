@@ -14,8 +14,9 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetArticleDto } from './dto/get-article.dto';
 import { DeleteArticleDto } from './dto/delete-article.dto';
 import { Public } from 'src/public/public.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Articles')
 @Controller('articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
@@ -29,6 +30,7 @@ export class ArticlesController {
     );
   }
 
+  @ApiBearerAuth()
   @Patch('update')
   async update(@Req() req, @Body() updateArticleDto: UpdateArticleDto) {
     return await this.articlesService.updateArticle(
@@ -49,7 +51,8 @@ export class ArticlesController {
   async getArticle(@Body() getArticleDto: GetArticleDto) {
     return await this.articlesService.getArticle(getArticleDto);
   }
-
+  
+  @ApiBearerAuth()
   @Delete()
   @HttpCode(204)
   async deleteArticle(
